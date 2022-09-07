@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .antMatchers("/guest/**").permitAll()
                 .antMatchers("/manager/**").hasAnyRole("MANAGER")
                 .and()
-                .formLogin().permitAll()
+                .formLogin().loginPage("/login").permitAll()
                 .and()
                 .logout().permitAll();
         return http.build();

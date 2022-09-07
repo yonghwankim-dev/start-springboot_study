@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().invalidateHttpSession(true).permitAll();
         return http.build();
     }
 

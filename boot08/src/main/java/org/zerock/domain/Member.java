@@ -7,10 +7,9 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,4 +28,8 @@ public class Member {
 
     @UpdateTimestamp
     private LocalDateTime updateDate;
+
+    @OneToMany
+    @JoinColumn(name = "member")
+    private List<MemberRole> roles;
 }

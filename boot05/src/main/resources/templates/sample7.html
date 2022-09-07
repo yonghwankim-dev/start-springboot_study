@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>Thymeleaf3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+	<h1 th:text="${#dates.format(now,'yyyy-MM-dd')}"></h1>
+	<h1 th:text="${#numbers.formatInteger(price,3,'COMMA')}"></h1>
+	<h1 th:text="${title}"></h1>
+	<h1 th:text="${options}"></h1>
+	
+	 
+	 
+	<div th:with="timeValue=${#dates.createToday()}">
+		<p>[[${timeValue}]]</p>
+	</div>
+	
+	<div th:with="priceValue=99.87654">
+		<p th:text="${#numbers.formatInteger(priceValue,3,'COMMA')}"></p>	<!-- 소수점 셋째자리에서 반올림, 콤마 속성 -->
+		<p th:text="${#numbers.formatDecimal(priceValue,5,10,'POINT')}"></p>	<!-- 정수 5자리, 소수점 10자리까지 출력 -->
+	</div>
+	
+	<span th:utext="${#strings.replace(title,'s','<b>s</b>')}"></span>
+	<ul>
+		<li th:each="str:${#strings.listSplit(title,' ')}">[[${str}]]</li>
+	</ul>
+	
+	 
+	
+</body>
+</html>

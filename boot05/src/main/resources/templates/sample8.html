@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>Thymeleaf3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+	<div th:insert="~{fragments/header::header}"></div> 
+
+	<ul>
+		<li><a th:href="@{http://localhost:8080/sample1}">sample1</a></li>	<!-- 절대경로 -->
+		<li><a th:href="@{/sample1}">sample1</a></li>						<!-- 현재 실행되는 컨텍스트 경로 반영, 현재 컨텍스트 '/' -->
+		<li><a th:href="@{~/sample1}">sample1</a></li>
+		<li><a th:href="@{/sample1(p1='aaa', p2='bbb')}">sample1</a></li>						
+	</ul>
+	
+	<div th:insert="~{fragments/footer::footer}"></div>	
+	
+</body>
+</html>

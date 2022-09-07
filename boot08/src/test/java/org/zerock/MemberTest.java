@@ -2,16 +2,15 @@ package org.zerock;
 
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.domain.Member;
 import org.zerock.domain.MemberRole;
 import org.zerock.persistence.MemberRepository;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional(readOnly = true)
@@ -44,5 +43,22 @@ public class MemberTest {
             memberRepository.save(member);
             //then
         }
+    }
+
+    @Test
+    public void readTest() throws Exception{
+        //given
+        Member member = new Member();
+        MemberRole memberRole = new MemberRole();
+        member.setUid("user1");
+        member.setUpw("pw1");
+        member.setUname("사용자1");
+        memberRole.setRoleName("MANAGER");
+        member.setRoles(Arrays.asList(memberRole));
+        memberRepository.save(member);
+        //when
+        Optional<Member> result = memberRepository.findById("user1");
+        result.ifPresent(m->System.out.println("member" + m));
+        //then
     }
 }

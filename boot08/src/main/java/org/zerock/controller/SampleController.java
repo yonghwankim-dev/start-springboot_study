@@ -16,18 +16,18 @@ public class SampleController {
     }
 
     @RequestMapping("/guest")
-    public void forGuest(){
-        log.info("guest");
+    public String forGuest(){
+        return "guest";
     }
 
     @RequestMapping("/manager")
-    public void forManager(){
-        log.info("manager");
+    public String forManager(){
+        return "manager";
     }
 
     @RequestMapping("/admin")
-    public void forAdmin(){
-        log.info("admin");
+    public String forAdmin(){
+        return "admin";
     }
 
 }

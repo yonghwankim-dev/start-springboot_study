@@ -20,9 +20,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests()
+                .antMatchers("/").permitAll()
                 .antMatchers("/guest/**").permitAll()
-                .antMatchers("/manager/**").hasAnyRole("MANAGER");
-        http.formLogin();
+                .antMatchers("/manager/**").hasAnyRole("MANAGER")
+                .and()
+                .formLogin().permitAll()
+                .and()
+                .logout().permitAll();
         return http.build();
     }
 
@@ -31,7 +35,7 @@ public class SecurityConfig {
         auth.inMemoryAuthentication()
                 .withUser("manager")
                 .password(passwordEncoder().encode("1234"))
-                .authorities("MANAGER");
+                .roles("MANAGER");
     }
 
     @Bean

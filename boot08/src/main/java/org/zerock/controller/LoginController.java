@@ -9,4 +9,8 @@ public class LoginController {
     public void login(){
 
     }
+
+    @GetMapping("/accessDenied")
+    public void accessDenied(){
+    }
 }

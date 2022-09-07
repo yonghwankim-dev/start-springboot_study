@@ -41,23 +41,17 @@ public class SecurityConfig {
         // 커스텀 인증 사용
         http.userDetailsService(zerockUserService);
 
-
         return http.build();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        메모리 기반 인증매니저 생성
-        auth.inMemoryAuthentication()
-                .withUser("manager")
-                .password(passwordEncoder().encode("1234"))
-                .roles("MANAGER");
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return (web)->web.ignoring().antMatchers("/ignore1", "/ignore2");
-    }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+////        메모리 기반 인증매니저 생성
+//        auth.inMemoryAuthentication()
+//                .withUser("manager")
+//                .password(passwordEncoder().encode("1234"))
+//                .roles("MANAGER");
+//    }
 
     @Bean
     public static PasswordEncoder passwordEncoder(){

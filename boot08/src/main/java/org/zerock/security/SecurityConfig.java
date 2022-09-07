@@ -18,6 +18,7 @@ public class SecurityConfig {
             .authorizeHttpRequests()
                 .antMatchers("/guest/**").permitAll()
                 .antMatchers("/manager/**").hasAnyRole("MANAGER");
+        http.formLogin();
         return http.build();
     }
 

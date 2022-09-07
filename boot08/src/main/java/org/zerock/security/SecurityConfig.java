@@ -23,13 +23,17 @@ public class SecurityConfig {
                 .antMatchers("/").permitAll()
                 .antMatchers("/guest/**").permitAll()
                 .antMatchers("/manager/**").hasAnyRole("MANAGER")
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                .and()
-                .exceptionHandling().accessDeniedPage("/accessDenied")
-                .and()
-                .formLogin().loginPage("/login").permitAll()
-                .and()
-                .logout().invalidateHttpSession(true).permitAll();
+                .antMatchers("/admin/**").hasAnyRole("ADMIN");
+
+        http.exceptionHandling().accessDeniedPage("/accessDenied");
+        http.formLogin().loginPage("/login").permitAll();
+        http.logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
+                .permitAll();
+
+
         return http.build();
     }
 

@@ -42,7 +42,8 @@ public class SecurityConfig {
 
         // 로그인 처리
         http.formLogin()
-            .loginPage("/login");
+            .loginPage("/login")
+            .permitAll();
 
         // Remember-Me 인증 처리
         http.rememberMe()
@@ -76,7 +77,6 @@ public class SecurityConfig {
         log.info("build Auth global...");
         // 인증매니저가 PasswordEncoder를 사용할것이라는 것을 명시
         auth.userDetailsService(zerockUserService).passwordEncoder(passwordEncoder());
-
     }
 
     @Bean

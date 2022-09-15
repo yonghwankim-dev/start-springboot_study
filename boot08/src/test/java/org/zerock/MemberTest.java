@@ -1,24 +1,39 @@
 package org.zerock;
 
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.domain.Member;
 import org.zerock.domain.MemberRole;
 import org.zerock.persistence.MemberRepository;
+import org.zerock.security.ZerockUserService;
 
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
+
+@RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional(readOnly = true)
+@Commit
 public class MemberTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Transactional
+    @Autowired
+    private ZerockUserService zerockUserService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     public void insertTest() throws Exception {
         //given
@@ -26,7 +41,7 @@ public class MemberTest {
         for (int i = 1; i <= 100; i++) {
             Member member = new Member();
             member.setUid("user" + i);
-            member.setUpw("pw" + i);
+            member.setUpw(passwordEncoder.encode("pw" + i));
             member.setUname("사용자" + i);
 
             MemberRole memberRole = new MemberRole();
@@ -46,19 +61,25 @@ public class MemberTest {
     }
 
     @Test
+    @Transactional(readOnly = true)
     public void readTest() throws Exception{
         //given
-        Member member = new Member();
-        MemberRole memberRole = new MemberRole();
-        member.setUid("user1");
-        member.setUpw("pw1");
-        member.setUname("사용자1");
-        memberRole.setRoleName("MANAGER");
-        member.setRoles(Arrays.asList(memberRole));
-        memberRepository.save(member);
+
         //when
-        Optional<Member> result = memberRepository.findById("user1");
+        Optional<Member> result = memberRepository.findById("user85");
         result.ifPresent(m->System.out.println("member" + m));
         //then
     }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void passwordEncoderMatchesTest() throws Exception{
+        //given
+        UserDetails user99 = zerockUserService.loadUserByUsername("user99");
+        //when
+        boolean pw99 = passwordEncoder.matches("pw99", user99.getPassword());
+        //then
+        assertThat(pw99).isTrue();
+    }
+
 }

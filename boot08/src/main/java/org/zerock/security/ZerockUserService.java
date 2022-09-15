@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.persistence.MemberRepository;
 
 import java.util.Arrays;
@@ -18,14 +19,12 @@ import java.util.Arrays;
 public class ZerockUserService implements UserDetailsService {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        memberRepository.findById(username).ifPresent(member->log.info(""+member));
-        return null;
+        ZerockSecurityUser zerockSecurityUser = memberRepository.findById(username).filter(m -> m != null).map(m -> new ZerockSecurityUser(m)).get();
+        return zerockSecurityUser;
     }
 }

@@ -1,9 +1,11 @@
 spring:
   config:
     import:
-      application-mysql.yml
-#    application-h2.yml,
+      application-mysql.yml,
+      application-h2.yml
 
+  thymeleaf:
+    cache: false
 
 logging:
   level:

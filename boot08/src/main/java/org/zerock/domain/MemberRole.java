@@ -17,6 +17,5 @@ public class MemberRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fno;
-
     private String roleName;
 }

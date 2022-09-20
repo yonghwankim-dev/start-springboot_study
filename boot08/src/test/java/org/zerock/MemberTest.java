@@ -16,7 +16,9 @@ import org.zerock.domain.MemberRole;
 import org.zerock.persistence.MemberRepository;
 import org.zerock.security.ZerockUserService;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -59,6 +61,7 @@ public class MemberTest {
             //then
         }
     }
+
 
     @Test
     @Transactional(readOnly = true)

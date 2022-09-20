@@ -3,7 +3,10 @@
 
 <div layout:fragment="content">
     <div class="panel-heading">List Page</div>
-    <div class="panel-body">list content...</div>
+    <div class="panel-body">
+        <p>[[${webBoardPage]]</p>
+        <p>[[${webBoardPage.content]]</p>
+    </div>
 </div>
 
 <th:block layout:fragment="script"/>

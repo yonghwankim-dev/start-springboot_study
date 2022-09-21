@@ -69,6 +69,12 @@ public class WebReplyController {
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
     }
 
+    @GetMapping("/{bno}")
+    public ResponseEntity<List<WebReply>> getReplies(@PathVariable("bno") Long bno){
+        log.info("get All Replies....");
+        WebBoard board = WebBoard.builder().bno(bno).build();
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
+    }
 
 
 }

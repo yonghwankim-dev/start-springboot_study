@@ -6,9 +6,35 @@
     <div class="panel-body">
         <p>[[${result}]]</p>
         <div th:with="result=${result.result}">
-            <ul class="list-group">
-                <li class="list-group-item" th:each="board:${result.content}">[[${board}]]</li>
-            </ul>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>BNO</th>
+                        <th>TITLE</th>
+                        <th>WRITER</th>
+                        <th>REGDATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="board:${result.content}">
+                        <td>[[${board.bno}]]</td>
+                        <td><a th:href="${board.bno}" class="boardLink">[[${board.title}]]</a></td>
+                        <td>[[${board.writer}]]</td>
+                        <td class="center">[[${#dates.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- search -->
+        <div>
+            <select id="searchType">
+                <option>---</option>
+                <option value="t" th:selected="${pageVO.type} == 't'">Title</option>
+                <option value="c" th:selected="${pageVO.type} == 'c'">Content</option>
+                <option value="w" th:selected="${pageVO.type} == 'w'">Writer</option>
+            </select>
+            <input type="text" id="searchKeyword" th:value="${pageVO.keyword}">
+            <button id="searchBtn">Search</button>
         </div>
         <!-- paging -->
         <nav>
@@ -26,6 +52,8 @@
         <form id="f1" th:action="@{list}" method="get">
             <input type="hidden" name="page" th:value="${result.currentPageNum}">       <!-- 현재 페이지 번호 -->
             <input type="hidden" name="size" th:value="${result.currentPage.pageSize}"> <!-- 현재페이지의 페이지 크기 -->
+            <input type="hidden" name="type" th:value="${pageVO.type}">                 <!-- 검색 타입 -->
+            <input type="hidden" name="keyword" th:value="${pageVO.keyword}">           <!-- 검색 내용 -->
         </form>
     </div>
     <!-- end panel -->
@@ -36,11 +64,25 @@
     <script th:inline="javascript">
         $(document).ready(function(){
            const formObj = $("#f1");
+           // 페이지 번호 클릭
            $(".pagination a").click(function(e){
               e.preventDefault();
               formObj.find("[name='page']").val($(this).attr('href'));
               formObj.submit();
            });
+
+           // 검색 버튼 클릭
+            $("#searchBtn").click(function(e){
+                const typeStr    = $("#searchType").find(":selected").val();
+                const keywordStr = $("#searchKeyword").val();
+                console.log(typeStr, "", keywordStr);
+
+                formObj.find("[name='type']").val(typeStr);
+                formObj.find("[name='keyword']").val(keywordStr);
+                formObj.find("[name='page']").val("1");
+                formObj.submit();
+
+            });
         });
     </script>
 </th:block>

@@ -59,11 +59,19 @@
         $(document).ready(function(){
             const formObj = $("#f1");
 
+            $(".modbtn").click(function(e){
+                formObj.attr("action", "modify");
+                formObj.attr("method", "post");
+                formObj.submit();
+            })
+
             $(".delbtn").click(function(e){
                formObj.attr("action", "delete");
                formObj.attr("method", "post");
                formObj.submit();
             });
+
+
         });
     </script>
 </th:block>

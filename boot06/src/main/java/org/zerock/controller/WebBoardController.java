@@ -63,10 +63,32 @@ public class WebBoardController {
     }
 
     @GetMapping("/modify")
-    public void modify(Long bno, @ModelAttribute("pageVO") PageVO pageVO, Model model){
+    public void modifyGET(Long bno, @ModelAttribute("pageVO") PageVO pageVO, Model model){
         log.info("MODIFY BNO: " + bno);
 
         webBoardService.findById(bno).ifPresent(board->model.addAttribute("board", board));
+    }
+
+    @PostMapping("/modify")
+    public String modifyPOST(WebBoard webBoard, PageVO pageVO, RedirectAttributes rttr){
+        log.info("Modify webBoard : " + webBoard);
+
+        webBoardService.findById(webBoard.getBno()).ifPresent(origin->{
+            origin.setTitle(webBoard.getTitle());
+            origin.setContent(webBoard.getContent());
+            
+            webBoardService.save(origin);
+            rttr.addFlashAttribute("msg", "success");
+            rttr.addAttribute("bno", origin.getBno());
+        });
+
+        // 페이징과 검색했던 결과로 이동하는 경우
+        rttr.addAttribute("page", pageVO.getPage());
+        rttr.addAttribute("size", pageVO.getSize());
+        rttr.addAttribute("type", pageVO.getType());
+        rttr.addAttribute("keyword", pageVO.getKeyword());
+
+        return "redirect:/boards/view";
     }
 
     @PostMapping("/delete")

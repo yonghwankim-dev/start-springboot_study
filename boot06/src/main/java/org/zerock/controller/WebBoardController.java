@@ -61,4 +61,11 @@ public class WebBoardController {
 
         webBoardService.findById(bno).ifPresent(board->model.addAttribute("board",board));
     }
+
+    @GetMapping("/modify")
+    public void modify(Long bno, @ModelAttribute("pageVO") PageVO pageVO, Model model){
+        log.info("MODIFY BNO: " + bno);
+
+        webBoardService.findById(bno).ifPresent(board->model.addAttribute("board", board));
+    }
 }

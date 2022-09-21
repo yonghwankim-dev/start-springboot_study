@@ -68,4 +68,21 @@ public class WebBoardController {
 
         webBoardService.findById(bno).ifPresent(board->model.addAttribute("board", board));
     }
+
+    @PostMapping("/delete")
+    public String delete(Long bno, PageVO pageVO, RedirectAttributes rttr){
+        log.info("DELETE BNO : " + bno);
+
+        webBoardService.deleteById(bno);
+
+        rttr.addFlashAttribute("msg", "success");
+
+        // 페이징과 검색했던 결과로 이동하는 경우
+        rttr.addAttribute("page", pageVO.getPage());
+        rttr.addAttribute("size", pageVO.getSize());
+        rttr.addAttribute("type", pageVO.getType());
+        rttr.addAttribute("keyword", pageVO.getKeyword());
+
+        return "redirect:/boards/list";
+    }
 }

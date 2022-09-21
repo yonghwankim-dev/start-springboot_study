@@ -1,5 +1,6 @@
 package org.zerock.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,6 +28,7 @@ public class WebReply {
     @UpdateTimestamp
     private Timestamp updatedate;
 
+    @JsonIgnore // 객체를 JSON 형태로 만들때 제외시켜줌
     @ManyToOne(fetch = FetchType.LAZY)
     private WebBoard board;
 }

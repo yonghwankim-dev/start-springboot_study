@@ -4,8 +4,24 @@
 <div layout:fragment="content">
     <div class="panel-heading">List Page</div>
     <div class="panel-body">
-        <p>[[${webBoardPage}]]</p>
-        <p>[[${webBoardPage.content}]]</p>
+        <p>[[${result}]]</p>
+        <div th:with="result=${result.result}">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="board:${result.content}">[[${board}]]</li>
+            </ul>
+        </div>
+        <!-- paging -->
+        <nav>
+            <div>
+                <ul class="pagination">
+                    <li class="page-item" th:if="${result.prevPage}"><a th:href="${result.prevPage.pageNumber} + 1">PREV [[${result.prevPage.pageNumber} + 1]]</a></li>
+                    <li class="page-item" th:each="p:${result.pageList}"
+                                          th:classappend="${p.pageNumber == result.currentPageNum - 1} ? active : ''">
+                        <a th:href="${p.pageNumber} + 1">[[${p.pageNumber} + 1]]</a></li>
+                    <li class="page-item" th:if="${result.nextPage}"><a th:href="${result.nextPage.pageNumber} + 1">NEXT [[${result.nextPage.pageNumber} + 1]]</a></li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </div>
 

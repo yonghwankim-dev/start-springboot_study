@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.domain.WebBoard;
 import org.zerock.service.WebBoardService;
@@ -22,10 +23,11 @@ import org.zerock.vo.PageVO;
 public class WebBoardController {
     private final WebBoardService webBoardService;
     @GetMapping("/list")
-    public void list(PageVO pageVO, Model model){
+    public void list(@ModelAttribute("pageVO") PageVO pageVO, Model model){
         // bno 기준 내림차순, 1페이지, 10개
         Pageable page = pageVO.makePageable(0, "bno");
-        Page<WebBoard> result = webBoardService.findAll(webBoardService.makePredicates(null, null), page);
+        Page<WebBoard> result = webBoardService.findAll(webBoardService.makePredicates(pageVO.getType(), pageVO.getKeyword()),
+                                                        page);
 
         log.info("" + page);
         log.info("" + result);

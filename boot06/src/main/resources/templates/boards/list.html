@@ -85,6 +85,17 @@
                 formObj.submit();
 
             });
+
+            // 게시물 제목 클릭
+            $(".boardLink").click(function(e){
+                e.preventDefault(); // a 태그의 기본 동작을 막음
+                const boardNo = $(this).attr("href");
+
+                // form 태그의 action을 게시물 조회가 가능한 링크로 변경함
+                formObj.attr("action", "/boards/view");
+                formObj.append("<input type='hidden' name='bno' value='" + boardNo + "'>");
+                formObj.submit();
+            });
         });
 
         $(window).load(function(){

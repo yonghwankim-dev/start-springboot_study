@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "tbl_webboards")
 @EqualsAndHashCode(of = "bno")

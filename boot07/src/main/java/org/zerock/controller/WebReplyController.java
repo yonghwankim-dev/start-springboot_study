@@ -41,5 +41,19 @@ public class WebReplyController {
         return webReplyRepository.getRepliesOfBoard(board);
     }
 
+    @Transactional
+    @DeleteMapping("/{bno}/{rno}")
+    public ResponseEntity<List<WebReply>> deleteReply(@PathVariable("bno") Long bno, @PathVariable("rno") Long rno){
+        log.info("delete reply: " + rno);
+
+        webReplyRepository.deleteById(rno);
+
+        WebBoard board = WebBoard.builder()
+                                 .bno(bno)
+                                 .build();
+
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
+    }
+
 
 }

@@ -55,5 +55,20 @@ public class WebReplyController {
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
     }
 
+    @Transactional
+    @PutMapping("/{bno}")
+    public ResponseEntity<List<WebReply>> modifyReply(@PathVariable("bno") Long bno, @RequestBody WebReply reply){
+        log.info("modify reply: " + reply);
+
+        webReplyRepository.findById(reply.getRno()).ifPresent(origin->{
+            origin.setReplyText(reply.getReplyText());
+            webReplyRepository.save(origin);
+        });
+
+        WebBoard board = WebBoard.builder().bno(bno).build();
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
+    }
+
+
 
 }

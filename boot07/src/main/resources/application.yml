@@ -1,0 +1,13 @@
+spring:
+  config:
+    import:
+      application-mysql.yml
+#    application-h2.yml,
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type : trace
+    org.springframework.web : debug
+    org.springframework.security: debug

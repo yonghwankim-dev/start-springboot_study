@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "tbl_webreplies")
 @EqualsAndHashCode(of = "rno")
-@ToString
+@ToString(exclude = "board")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,4 +26,7 @@ public class WebReply {
     private Timestamp regdate;
     @UpdateTimestamp
     private Timestamp updatedate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private WebBoard board;
 }

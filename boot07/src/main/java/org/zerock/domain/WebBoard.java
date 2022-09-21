@@ -6,13 +6,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "tbl_webboards")
 @EqualsAndHashCode(of = "bno")
-@ToString
+@ToString(exclude = "replies")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,4 +28,7 @@ public class WebBoard {
     private Timestamp regdate;
     @UpdateTimestamp
     private Timestamp updatedate;
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    List<WebReply> replies;
 }

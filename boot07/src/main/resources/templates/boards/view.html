@@ -129,7 +129,18 @@
                     date.getDate();
             }
 
+            let bno = [[${board.bno}]];
+            let rno;
+            let replyTextObj = $("input[name='replyText']");
+            let replyerObj   = $("input[name='replyer']");
             let mode;
+            function afterAll(list){
+                printList(list);
+                $("#myModal").modal("hide");
+                replyTextObj.val("");
+                replyerObj.val("");
+            }
+
             $("#addReplyBtn").on("click", function(){
                 $("#myModal").modal("show");
                 $(".modal-title").text("Add Reply");
@@ -137,13 +148,10 @@
                 mode = "ADD";
             })
 
-            let bno = [[${board.bno}]];
-            let replyTextObj = $("input[name='replyText']");
-            let replyerObj   = $("input[name='replyer']");
             $("#modalBtn").click(function(){
-               if(mode == 'ADD'){
-                   let replyText = replyTextObj.val();
-                   let replyer   = replyerObj.val();
+                let replyText = replyTextObj.val();
+                let replyer   = replyerObj.val();
+                if(mode == 'ADD'){
                    let obj       = {replyText : replyText, replyer : replyer, bno : bno};
 
                    replyManager.add(obj, function(list){
@@ -153,10 +161,15 @@
                       replyTextObj.val("");
                       replyerObj.val("");
                    });
-               }
+                }else if(mode == 'MOD'){
+                    let obj = {replyText: replyText, bno : bno, rno : rno};
+                    replyManager.update(obj, function(list){
+                       alert("댓글이 수정되었습니다.");
+                       afterAll(list);
+                    });
+                }
             });
 
-            let rno;
             $("#replyTable").on("click", "tr", function(e){
                let tds = $(this).find("td");
 

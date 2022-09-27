@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout1}">
+
+<div layout:fragment="content">
+    <div class="panel-heading">View Page</div>
+    <div class="panel-body">
+
+        <div class="form-group">
+            <label>BNO</label>
+            <input class="form-control" name="bno" th:value="${board.bno}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Title</label>
+            <input class="form-control" name="title" th:value="${board.title}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Content</label>
+            <textarea class="form-control" name="content" rows="3" th:text="${board.content}" readonly></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Writer</label>
+            <input class="form-control" name="writer" th:value="${board.writer}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Regdate</label>
+            <input class="form-control" name="regdate" th:value="${#dates.format(board.regdate, 'yyyy-MM-dd')}" readonly>
+        </div>
+    </div>
+
+    <!-- end panel -->
+    <div class="pull-right">
+        <a th:href="@{modify(page=${pageVO.page},
+                             size=${pageVO.size},
+                             type=${pageVO.type},
+                             keyword=${pageVO.keyword},
+                             bno=${board.bno})}" class="btn btn-default">Modify/Delete</a>
+
+        <a th:href="@{list(page=${pageVO.page},
+                           size=${pageVO.size},
+                           type=${pageVO.type},
+                           keyword=${pageVO.keyword},
+                           bno=${board.bno})}" class="btn btn-primary">Go List</a>
+    </div>
+
+    <!-- replies -->
+    <div class="container">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>BNO</th>
+                    <th>REPLY TEXT</th>
+                    <th>REPLER</th>
+                    <th>REPLY DATE</th>
+                </tr>
+            </thead>
+            <tbody id="replyTable">
+
+            </tbody>
+        </table>
+
+        <div class="pull-right">
+            <button class="btn" id="addReplyBtn">Add Reply</button>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal Content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <label>Reply Text</label>
+                    <input type="text" class="form-control" name="replyText">
+
+                    <label>Replyer</label>
+                    <input type="text" class="form-control" name="replyer">
+                </div>
+                <div class="modal-footer">
+                    <button id="delModalBtn" class="btn btn-danger">Delete</button>
+                    <button id="modalBtn" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
+</div>
+<!-- end fragment -->
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
+    <script th:inline="javascript">
+
+        $(document).ready(function(e){
+
+            (function(){
+                // 댓글 불러오기
+                replyManager.getAll([[${board.bno}]], printList);
+            })();
+
+            function printList(list){
+                let str = "";
+                let replyObj;
+                for(let i = 0; i < list.length; i++){
+                    replyObj = list[i];
+
+                    str += "<tr>" +
+                        "<td>"+ replyObj.rno +"</td>" +
+                        "<td>"+ replyObj.replyText +"</td>" +
+                        "<td>"+ replyObj.replyer +"</td>" +
+                        "<td>"+ formatDate(replyObj.regdate) +"</td>" +
+                        "</tr>";
+                }
+                $("#replyTable").html(str);
+            }
+
+            function formatDate(timeValue){
+                const date = new Date(timeValue);
+                return date.getFullYear() + "-" +
+                    (date.getMonth()+1 >= 10 ? date.getMonth()+1 : '0'+(date.getMonth()+1)) + "-" +
+                    date.getDate();
+            }
+
+            let bno = [[${board.bno}]];
+            let rno;
+            let replyTextObj = $("input[name='replyText']");
+            let replyerObj   = $("input[name='replyer']");
+            let mode;
+            function afterAll(list){
+                printList(list);
+                $("#myModal").modal("hide");
+                replyTextObj.val("");
+                replyerObj.val("");
+            }
+
+            $("#addReplyBtn").on("click", function(){
+                $("#myModal").modal("show");
+                $(".modal-title").text("Add Reply");
+                $("#delModalBtn").hide();
+                mode = "ADD";
+            })
+
+            $("#modalBtn").click(function(){
+                let replyText = replyTextObj.val();
+                let replyer   = replyerObj.val();
+                if(mode == 'ADD'){
+                   let obj       = {replyText : replyText, replyer : replyer, bno : bno};
+
+                   replyManager.add(obj, function(list){
+                      printList(list);
+                      alert("새로운 댓글이 추가되었습니다.");
+                      $("#myModal").modal("hide");
+                      replyTextObj.val("");
+                      replyerObj.val("");
+                   });
+                }else if(mode == 'MOD'){
+                    let obj = {replyText: replyText, bno : bno, rno : rno};
+                    replyManager.update(obj, function(list){
+                       alert("댓글이 수정되었습니다.");
+                       afterAll(list);
+                    });
+                }
+            });
+
+            $("#replyTable").on("click", "tr", function(e){
+               let tds = $(this).find("td");
+
+               rno = tds[0].innerHTML;
+               mode = "MOD";
+
+               replyTextObj.val(tds[1].innerHTML);
+               replyerObj.val(tds[2].innerHTML);
+               $("#myModal").modal("show");
+               $(".modal-title").text("Modify/Delete Reply");
+               $("#delModalBtn").show();
+            });
+
+            $("#delModalBtn").on("click", function(e){
+                let obj = {bno : bno, rno : rno};
+                replyManager.remove(obj, function(list){
+                    printList(list);
+                    alert("댓글이 삭제되었습니다.");
+                    $("#myModal").modal("hide");
+                    replyTextObj.val("");
+                    replyerObj.val("");
+                });
+            });
+
+        });
+
+
+        $(window).load(function(){
+            const msg = [[${msg}]];
+
+            if(msg == 'success'){
+                alert("정상적으로 처리되었습니다.");
+                const stateObj = {msg : ""};
+            }
+        });
+    </script>
+</th:block>

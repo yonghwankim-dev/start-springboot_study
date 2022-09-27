@@ -30,6 +30,7 @@
             <input class="form-control" name="regdate" th:value="${#dates.format(board.regdate, 'yyyy-MM-dd')}" readonly>
         </div>
     </div>
+
     <!-- end panel -->
     <div class="pull-right">
         <a th:href="@{modify(page=${pageVO.page},
@@ -60,9 +61,39 @@
 
             </tbody>
         </table>
+
+        <div class="pull-right">
+            <button class="btn" id="addReplyBtn">Add Reply</button>
+        </div>
     </div>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal Content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <label>Reply Text</label>
+                    <input type="text" class="form-control" name="replyText">
+
+                    <label>Replyer</label>
+                    <input type="text" class="form-control" name="replyer">
+                </div>
+                <div class="modal-footer">
+                    <button id="delModalBtn" class="btn btn-danger">Delete</button>
+                    <button id="modalBtn" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
 </div>
 <!-- end fragment -->
+
 
 <th:block layout:fragment="script">
     <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
@@ -97,6 +128,59 @@
                     (date.getMonth()+1 >= 10 ? date.getMonth()+1 : '0'+(date.getMonth()+1)) + "-" +
                     date.getDate();
             }
+
+            let mode;
+            $("#addReplyBtn").on("click", function(){
+                $("#myModal").modal("show");
+                $(".modal-title").text("Add Reply");
+                $("#delModalBtn").hide();
+                mode = "ADD";
+            })
+
+            let bno = [[${board.bno}]];
+            let replyTextObj = $("input[name='replyText']");
+            let replyerObj   = $("input[name='replyer']");
+            $("#modalBtn").click(function(){
+               if(mode == 'ADD'){
+                   let replyText = replyTextObj.val();
+                   let replyer   = replyerObj.val();
+                   let obj       = {replyText : replyText, replyer : replyer, bno : bno};
+
+                   replyManager.add(obj, function(list){
+                      printList(list);
+                      alert("새로운 댓글이 추가되었습니다.");
+                      $("#myModal").modal("hide");
+                      replyTextObj.val("");
+                      replyerObj.val("");
+                   });
+               }
+            });
+
+            let rno;
+            $("#replyTable").on("click", "tr", function(e){
+               let tds = $(this).find("td");
+
+               rno = tds[0].innerHTML;
+               mode = "MOD";
+
+               replyTextObj.val(tds[1].innerHTML);
+               replyerObj.val(tds[2].innerHTML);
+               $("#myModal").modal("show");
+               $(".modal-title").text("Modify/Delete Reply");
+               $("#delModalBtn").show();
+            });
+
+            $("#delModalBtn").on("click", function(e){
+                let obj = {bno : bno, rno : rno};
+                replyManager.remove(obj, function(list){
+                    printList(list);
+                    alert("댓글이 삭제되었습니다.");
+                    $("#myModal").modal("hide");
+                    replyTextObj.val("");
+                    replyerObj.val("");
+                });
+            });
+
         });
 
 

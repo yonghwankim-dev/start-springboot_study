@@ -57,10 +57,5 @@ public class PageMarker<T> {
             startPage = startPage.next();
         }
         this.nextPage = startPage.getPageNumber() + 1 < totalPageNum ? startPage : null;
-
-
-
-
-
     }
 }

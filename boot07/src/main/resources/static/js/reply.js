@@ -5,7 +5,14 @@ const replyManager = (function(){
     };
 
     const add    = function(obj, callback){
-        console.log("add...");
+        $.ajax({
+           type : "post",
+           url  : "/replies/" + obj.bno,
+           data : JSON.stringify(obj),
+           dataType : "json",
+           contentType : "application/json",
+           success : callback
+        });
     };
 
     const update = function(obj, callback){
@@ -13,7 +20,13 @@ const replyManager = (function(){
     }
 
     const remove = function(obj, callback){
-        console.log("remove...");
+        $.ajax({
+           type : "delete",
+            url: "/replies/" + obj.bno + "/" + obj.rno,
+            dataType: "json",
+            contentType: "application/json",
+            success: callback
+        });
     }
 
     return {

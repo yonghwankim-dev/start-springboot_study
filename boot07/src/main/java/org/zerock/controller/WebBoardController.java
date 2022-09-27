@@ -31,7 +31,6 @@ public class WebBoardController {
         Pageable page = pageVO.makePageable(0, "bno");
         Page<WebBoard> result = webBoardService.findAll(webBoardService.makePredicates(pageVO.getType(), pageVO.getKeyword()),
                                                         page);
-
         log.info("" + page);
         log.info("" + result);
         log.info("TOTAL PAGE NUMBER: " + result.getTotalPages());

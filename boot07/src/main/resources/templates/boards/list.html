@@ -20,10 +20,13 @@
                 </thead>
                 <tbody>
                     <tr th:each="board:${result.content}">
-                        <td>[[${board.bno}]]</td>
-                        <td><a th:href="${board.bno}" class="boardLink">[[${board.title}]]</a></td>
-                        <td>[[${board.writer}]]</td>
-                        <td class="center">[[${#dates.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+                        <td>[[${board[0]}]]</td>
+                        <td>
+                            <a th:href="${board[0]}" class="boardLink">[[${board[1]}]]</a>
+                            <span class="badge">[[${board[2]}]]</span>
+                        </td>
+                        <td>[[${board[3]}]]</td>
+                        <td class="center">[[${#dates.format(board[4], 'yyyy-MM-dd')}]]</td>
                     </tr>
                 </tbody>
             </table>

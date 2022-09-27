@@ -1,4 +1,4 @@
-package org.zerock.persistence;
+package org.zerock;
 
 import groovy.util.logging.Log;
 import org.junit.jupiter.api.Test;
@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.zerock.domain.WebBoard;
 import org.zerock.domain.WebReply;
+import org.zerock.persistence.WebReplyRepository;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;

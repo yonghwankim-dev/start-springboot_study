@@ -1,8 +1,10 @@
-package org.zerock.persistence;
+package org.zerock;
 
 
 
 import groovy.util.logging.Log;
+import groovy.util.logging.Log4j2;
+import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,14 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.zerock.domain.WebBoard;
+import org.zerock.persistence.WebBoardRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@Log
 @Commit
 public class WebBoardRepositoryTest {
     @Autowired
@@ -57,6 +61,16 @@ public class WebBoardRepositoryTest {
         Page<WebBoard> result = webBoardRepository.findAll(webBoardRepository.makePredicates(type, keyword), pageable);
         //then
         result.getContent().forEach(System.out::println);
+    }
+
+    @Test
+    public void 댓글개수가포함된_제목(){
+        //given
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");
+        //when
+        List<Object[]> list = webBoardRepository.getListWithQuery(pageable);
+        //then
+        list.forEach(arr -> System.out.println(Arrays.toString(arr)));
     }
 
 }

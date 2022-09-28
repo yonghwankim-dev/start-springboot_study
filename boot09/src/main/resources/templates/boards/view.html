@@ -1,5 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout1}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layout/layout1}">
 
 <div layout:fragment="content">
     <div class="panel-heading">View Page</div>
@@ -32,12 +35,13 @@
     </div>
 
     <!-- end panel -->
-    <div class="pull-right">
-        <a th:href="@{modify(page=${pageVO.page},
+    <div class="pull-right"
+         th:with="uid=${#authentication.principal eq 'anonymousUser'} ? 'Guest' : ${#authentication.principal.member.uid}">
+        <a th:if="${uid} eq ${board.writer}" th:href="@{modify(page=${pageVO.page},
                              size=${pageVO.size},
                              type=${pageVO.type},
                              keyword=${pageVO.keyword},
-                             bno=${board.bno})}" class="btn btn-default">Modify/Delete</a>
+                             bno=${board.bno})}" id="goModBtn" class="btn btn-default">Modify/Delete</a>
 
         <a th:href="@{list(page=${pageVO.page},
                            size=${pageVO.size},
@@ -193,6 +197,20 @@
                     replyerObj.val("");
                 });
             });
+
+            // Modify/Delete 버튼 클릭
+            let uid = [[${#authentication.principal eq 'anonymousUser' ? null : #authentication.principal.member.uid}]];
+            if(uid == null){
+                if(confirm("로그인 할까요?")){
+                    self.location = $(this).attr("href");
+                }else{
+                    if(uid == [[${board.writer}]]){
+                        self.location = $(this).attr("href");
+                    }else{
+                        alert("작성자만이 수정이나 삭제할 수 있습니다.");
+                    }
+                }
+            }
 
         });
 

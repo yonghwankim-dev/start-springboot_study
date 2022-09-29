@@ -133,6 +133,7 @@
                     date.getDate();
             }
 
+            let uid = [[${#authentication.principal eq 'anonymousUser' ? null : #authentication.principal.member.uid}]];
             let bno = [[${board.bno}]];
             let rno;
             let replyTextObj = $("input[name='replyText']");
@@ -146,18 +147,25 @@
             }
 
             $("#addReplyBtn").on("click", function(){
+                if(uid == null){
+                    if(confirm("로그인할까요?")){
+                        self.location = "/login";
+                    }
+                    return;
+                }
+                replyerObj.val(uid);
                 $("#myModal").modal("show");
                 $(".modal-title").text("Add Reply");
                 $("#delModalBtn").hide();
                 mode = "ADD";
-            })
+            });
 
+            let csrf      = JSON.parse('[[${_csrf}]]');
             $("#modalBtn").click(function(){
                 let replyText = replyTextObj.val();
                 let replyer   = replyerObj.val();
                 if(mode == 'ADD'){
-                   let obj       = {replyText : replyText, replyer : replyer, bno : bno};
-
+                   let obj       = {replyText : replyText, replyer : replyer, bno : bno, csrf : csrf};
                    replyManager.add(obj, function(list){
                       printList(list);
                       alert("새로운 댓글이 추가되었습니다.");
@@ -199,18 +207,17 @@
             });
 
             // Modify/Delete 버튼 클릭
-            let uid = [[${#authentication.principal eq 'anonymousUser' ? null : #authentication.principal.member.uid}]];
-            if(uid == null){
-                if(confirm("로그인 할까요?")){
-                    self.location = $(this).attr("href");
-                }else{
-                    if(uid == [[${board.writer}]]){
-                        self.location = $(this).attr("href");
-                    }else{
-                        alert("작성자만이 수정이나 삭제할 수 있습니다.");
-                    }
-                }
-            }
+            // if(uid == null){
+            //     if(confirm("로그인 할까요?")){
+            //         self.location = $(this).attr("href");
+            //     }else{
+            //         if(uid == [[${board.writer}]]){
+            //             self.location = $(this).attr("href");
+            //         }else{
+            //             alert("작성자만이 수정이나 삭제할 수 있습니다.");
+            //         }
+            //     }
+            // }
 
         });
 

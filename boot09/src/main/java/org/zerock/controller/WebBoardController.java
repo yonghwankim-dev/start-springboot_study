@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +59,7 @@ public class WebBoardController {
         repo.findById(bno).ifPresent(board->model.addAttribute("board",board));
     }
 
+    @Secured(value = {"ROLE_BASIC", "ROLE_MANAGER", "ROLE_ADMIN"})
     @GetMapping("/modify")
     public void modifyGET(Long bno, @ModelAttribute("pageVO") PageVO pageVO, Model model){
         log.info("MODIFY BNO: " + bno);
@@ -65,6 +67,7 @@ public class WebBoardController {
         repo.findById(bno).ifPresent(board->model.addAttribute("board", board));
     }
 
+    @Secured(value = {"ROLE_BASIC", "ROLE_MANAGER", "ROLE_ADMIN"})
     @PostMapping("/modify")
     public String modifyPOST(WebBoard webBoard, PageVO pageVO, RedirectAttributes rttr){
         log.info("Modify webBoard : " + webBoard);
@@ -87,6 +90,7 @@ public class WebBoardController {
         return "redirect:/boards/view";
     }
 
+    @Secured(value = {"ROLE_BASIC", "ROLE_MANAGER", "ROLE_ADMIN"})
     @PostMapping("/delete")
     public String delete(Long bno, PageVO pageVO, RedirectAttributes rttr){
         log.info("DELETE BNO : " + bno);

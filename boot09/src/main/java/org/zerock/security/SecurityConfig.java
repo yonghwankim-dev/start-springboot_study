@@ -31,6 +31,7 @@ public class SecurityConfig {
         // URL 접근 처리
         http.authorizeHttpRequests()
             .antMatchers("/boards/list").permitAll()
+            .antMatchers("/boards/view").permitAll()
             .antMatchers("/boards/register").hasAnyRole("BASIC","MANAGER","ADMIN")
             .anyRequest().authenticated();
 
@@ -50,7 +51,10 @@ public class SecurityConfig {
         http.logout()
             .logoutUrl("/logout")   // 로그아웃을 특정한 페이지에서 처리
             .logoutSuccessUrl("/login?logout") // 로그아웃 성공시 login으로 이동
+            .deleteCookies("JSESSIONID")
             .invalidateHttpSession(true);
+
+
 
         // 접근 권한이 없는 경우 페이지 처리
         http.exceptionHandling().accessDeniedPage("/accessDenied");
@@ -63,12 +67,8 @@ public class SecurityConfig {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        메모리 기반 인증매니저 생성
-//        auth.inMemoryAuthentication()
-//                .withUser("manager")
-//                .password(passwordEncoder().encode("1234"))
-//                .roles("MANAGER");
         log.info("build Auth global...");
+
         // 인증매니저가 PasswordEncoder를 사용할것이라는 것을 명시
         auth.userDetailsService(zerockUserService).passwordEncoder(passwordEncoder());
     }

@@ -139,6 +139,7 @@
             let replyTextObj = $("input[name='replyText']");
             let replyerObj   = $("input[name='replyer']");
             let mode;
+            let csrf      = JSON.parse('[[${_csrf}]]');
             function afterAll(list){
                 printList(list);
                 $("#myModal").modal("hide");
@@ -160,7 +161,7 @@
                 mode = "ADD";
             });
 
-            let csrf      = JSON.parse('[[${_csrf}]]');
+
             $("#modalBtn").click(function(){
                 let replyText = replyTextObj.val();
                 let replyer   = replyerObj.val();
@@ -174,7 +175,7 @@
                       replyerObj.val("");
                    });
                 }else if(mode == 'MOD'){
-                    let obj = {replyText: replyText, bno : bno, rno : rno};
+                    let obj = {replyText: replyText, bno : bno, rno : rno, csrf : csrf};
                     replyManager.update(obj, function(list){
                        alert("댓글이 수정되었습니다.");
                        afterAll(list);
@@ -193,10 +194,15 @@
                $("#myModal").modal("show");
                $(".modal-title").text("Modify/Delete Reply");
                $("#delModalBtn").show();
+
+               if(uid != tds[2].innerHTML.trim()){
+                   $("#delModalBtn").hide();
+                   $("#modalBtn").hide();
+               }
             });
 
             $("#delModalBtn").on("click", function(e){
-                let obj = {bno : bno, rno : rno};
+                let obj = {bno : bno, rno : rno, csrf : csrf};
                 replyManager.remove(obj, function(list){
                     printList(list);
                     alert("댓글이 삭제되었습니다.");

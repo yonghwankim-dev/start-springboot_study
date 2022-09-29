@@ -1,7 +1,16 @@
 const replyManager = (function(){
     const getAll = function(obj, callback){
         console.log("get All...");
-        $.getJSON("/replies/"+obj, callback);
+        console.log("obj : " + obj);
+        // $.getJSON("/replies/"+obj, callback);
+        $.ajax({
+            type : "get",
+            url  : "/replies/" + obj,
+            data : JSON.stringify(obj),
+            dataType : "json",
+            contentType : "application/json",
+            success : callback
+        });
     };
 
     const add    = function(obj, callback){

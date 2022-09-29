@@ -7,7 +7,7 @@
 <div layout:fragment="content">
     <div class="panel-heading">View Page</div>
     <div class="panel-body">
-
+        <form th:action="@{/login}"></form>
         <div class="form-group">
             <label>BNO</label>
             <input class="form-control" name="bno" th:value="${board.bno}" readonly>
@@ -150,7 +150,7 @@
             $("#addReplyBtn").on("click", function(){
                 if(uid == null){
                     if(confirm("로그인할까요?")){
-                        self.location = "/login";
+                        self.location = "/login?dest=" + encodeURIComponent(self.location);
                     }
                     return;
                 }
@@ -211,20 +211,6 @@
                     replyerObj.val("");
                 });
             });
-
-            // Modify/Delete 버튼 클릭
-            // if(uid == null){
-            //     if(confirm("로그인 할까요?")){
-            //         self.location = $(this).attr("href");
-            //     }else{
-            //         if(uid == [[${board.writer}]]){
-            //             self.location = $(this).attr("href");
-            //         }else{
-            //             alert("작성자만이 수정이나 삭제할 수 있습니다.");
-            //         }
-            //     }
-            // }
-
         });
 
 

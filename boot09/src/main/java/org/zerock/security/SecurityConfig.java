@@ -30,14 +30,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // URL 접근 처리
         http.authorizeHttpRequests()
+            .antMatchers("/css/**").permitAll()
+            .antMatchers("/js/**").permitAll()
+            .antMatchers("/img/**").permitAll()
             .antMatchers("/boards/list").permitAll()
             .antMatchers("/boards/view").permitAll()
+            .antMatchers("/replies/**").permitAll()
             .antMatchers("/boards/register").hasAnyRole("BASIC","MANAGER","ADMIN")
             .anyRequest().authenticated();
 
         // 로그인 처리
         http.formLogin()
             .loginPage("/login")
+            .successHandler(new LoginSuccessHandler())
             .permitAll();
 
         // Remember-Me 인증 처리
@@ -58,9 +63,6 @@ public class SecurityConfig {
 
         // 접근 권한이 없는 경우 페이지 처리
         http.exceptionHandling().accessDeniedPage("/accessDenied");
-
-        // 커스텀 인증 사용
-//        http.userDetailsService(zerockUserService);
 
         return http.build();
     }

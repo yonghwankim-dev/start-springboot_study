@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static javax.persistence.GenerationType.*;
+
 @Getter
 @Setter
 @Entity

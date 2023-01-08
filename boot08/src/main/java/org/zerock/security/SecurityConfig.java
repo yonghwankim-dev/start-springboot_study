@@ -61,22 +61,18 @@ public class SecurityConfig {
         // 접근 권한이 없는 경우 페이지 처리
         http.exceptionHandling().accessDeniedPage("/accessDenied");
 
-        // 커스텀 인증 사용
-//        http.userDetailsService(zerockUserService);
+        // 사용자 정의 UserDetailService를 구현한 zerockUserService 클래스를
+        // HttpSecurity 클래스에 있는 AuthenticationManager에게 등록
+        http.userDetailsService(zerockUserService);
 
         return http.build();
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        메모리 기반 인증매니저 생성
-//        auth.inMemoryAuthentication()
-//                .withUser("manager")
-//                .password(passwordEncoder().encode("1234"))
-//                .roles("MANAGER");
-        log.info("build Auth global...");
-        // 인증매니저가 PasswordEncoder를 사용할것이라는 것을 명시
-        auth.userDetailsService(zerockUserService).passwordEncoder(passwordEncoder());
+        buildAuthenticationManagerInMemoryBased(auth);
+
+        buildAuthenticationManagerJdbcBased(auth);
     }
 
     @Bean
@@ -88,5 +84,25 @@ public class SecurityConfig {
         JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
         repo.setDataSource(dataSource);
         return repo;
+    }
+
+    // 인증 매니저 생성 방법 1 : 메모리 기반 인증매니저 생성
+    private void buildAuthenticationManagerInMemoryBased(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+            .withUser("manager")
+            .password(passwordEncoder().encode("1234"))
+            .roles("MANAGER");
+    }
+
+    // 인증 매니저 생성 방법 2 : JDBC를 이용한 인증 처리 인증매니저 생성
+    // 스프링 시큐리티가 데이터베이스를 연동하는 방법1) 직접 SQL 지정하여 처리
+    private void buildAuthenticationManagerJdbcBased(AuthenticationManagerBuilder auth) throws Exception {
+        String query1 = "SELECT uid username, upw password, true enabled FROM tbl_members WHERE uid= ?";
+        String query2 = "SELECT member uid, role_name role FROM tbl_member_roles WHERE member = ?";
+        auth.jdbcAuthentication()
+            .dataSource(dataSource)
+            .usersByUsernameQuery(query1)
+            .rolePrefix("ROLE_")
+            .authoritiesByUsernameQuery(query2);
     }
 }

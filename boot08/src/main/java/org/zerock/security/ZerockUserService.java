@@ -24,7 +24,10 @@ public class ZerockUserService implements UserDetailsService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ZerockSecurityUser zerockSecurityUser = memberRepository.findById(username).filter(m -> m != null).map(m -> new ZerockSecurityUser(m)).get();
+        ZerockSecurityUser zerockSecurityUser = memberRepository.findById(username)
+                                                                .filter(m -> m != null)
+                                                                .map(m -> new ZerockSecurityUser(m))
+                                                                .get();
         return zerockSecurityUser;
     }
 }
